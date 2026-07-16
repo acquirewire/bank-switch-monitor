@@ -13,6 +13,7 @@ import html
 import json
 import os
 import re
+import subprocess
 import sys
 import time
 import urllib.error
@@ -60,17 +61,26 @@ def log(msg):
 
 
 def fetch_text(url):
-    """Fetch a page and reduce it to visible-ish text."""
-    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    """Fetch a page and reduce it to visible-ish text.
+
+    Uses curl rather than urllib: some CDNs (MSE's) 403 Python's TLS
+    fingerprint from datacenter IPs but serve curl fine.
+    """
     last_err = None
     for attempt in range(3):
-        try:
-            with urllib.request.urlopen(req, timeout=30) as resp:
-                raw = resp.read().decode("utf-8", errors="replace")
+        proc = subprocess.run(
+            ["curl", "-s", "--max-time", "30", "-A", USER_AGENT,
+             "-H", "Accept: text/html,application/xhtml+xml",
+             "-H", "Accept-Language: en-GB,en;q=0.9",
+             "-w", "\n%{http_code}", url],
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+        )
+        body, _, code = proc.stdout.rpartition("\n")
+        if proc.returncode == 0 and code.strip() == "200" and body:
+            raw = body
             break
-        except (urllib.error.URLError, TimeoutError) as e:
-            last_err = e
-            time.sleep(3 * (attempt + 1))
+        last_err = f"curl rc={proc.returncode} http={code.strip() or '?'}"
+        time.sleep(5 * (attempt + 1))
     else:
         raise RuntimeError(f"fetch failed: {url}: {last_err}")
     raw = re.sub(r"<(script|style)\b.*?</\1>", " ", raw, flags=re.DOTALL | re.IGNORECASE)
