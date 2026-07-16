@@ -1,0 +1,17 @@
+{
+  "discord_mention": "@everyone",
+  "pages": [
+    {
+      "name": "MSE current account switch offers",
+      "url": "https://www.moneysavingexpert.com/banking/compare-best-bank-accounts/",
+      "min_gbp": 75,
+      "max_gbp": 300
+    },
+    {
+      "name": "MSE student bank accounts",
+      "url": "https://www.moneysavingexpert.com/students/student-bank-account/",
+      "min_gbp": 50,
+      "max_gbp": 300
+    }
+  ]
+}

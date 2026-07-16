@@ -1,0 +1,42 @@
+{
+ "initialized": true,
+ "pages": {
+  "MSE current account switch offers": [
+   "Bank of Scotland|175",
+   "Bank of Scotland|250",
+   "Barclays|200",
+   "Chase|250",
+   "Co-op Bank|100",
+   "Co-op Bank|125",
+   "First Direct|175",
+   "First Direct|200",
+   "First Direct|220",
+   "First Direct|250",
+   "First Direct|300",
+   "HSBC|175",
+   "HSBC|200",
+   "HSBC|220",
+   "HSBC|250",
+   "Halifax|175",
+   "Lloyds|175",
+   "NatWest|100",
+   "NatWest|200",
+   "Nationwide|175",
+   "Nationwide|75",
+   "RBS|200",
+   "Santander|180",
+   "Ulster Bank|200"
+  ],
+  "MSE student bank accounts": [
+   "NatWest|100",
+   "NatWest|120",
+   "NatWest|80",
+   "Nationwide|100",
+   "Nationwide|120",
+   "RBS|100",
+   "RBS|120",
+   "RBS|80",
+   "Santander|100"
+  ]
+ }
+}
