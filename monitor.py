@@ -52,6 +52,23 @@ BANKS = {
     "Club Lloyds": ["club lloyds"],
 }
 
+# Verified product pages (2026-07-16) so alerts carry an apply link
+APPLY_LINKS = {
+    "HSBC": "https://www.hsbc.co.uk/current-accounts/products/bank-account/",
+    "First Direct": "https://www.firstdirect.com/banking/current-account/",
+    "Barclays": "https://www.barclays.co.uk/current-accounts/bank-account/",
+    "NatWest": "https://www.natwest.com/current-accounts.html",
+    "Santander": "https://www.santander.co.uk/personal/current-accounts",
+    "Nationwide": "https://www.nationwide.co.uk/current-accounts/flexdirect/",
+    "Bank of Scotland": "https://www.bankofscotland.co.uk/bankaccounts/classic.html",
+    "Co-op Bank": "https://www.co-operativebank.co.uk/products/bank-accounts/switch-offer/",
+    "Lloyds": "https://www.lloydsbank.com/current-accounts.html",
+    "Halifax": "https://www.halifax.co.uk/bankaccounts.html",
+    "RBS": "https://www.rbs.co.uk/current-accounts.html",
+    "TSB": "https://www.tsb.co.uk/current-accounts/",
+    "Virgin Money": "https://uk.virginmoney.com/current-accounts/",
+}
+
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
@@ -89,17 +106,27 @@ def fetch_text(url):
 
 
 def extract_offers(text, min_gbp, max_gbp, window=180):
-    """Return {(bank, amount)} for £amounts appearing shortly after a bank name."""
+    """Return {(bank, amount): context_snippet} for £amounts near a bank name.
+
+    Keeps the longest surrounding text per pair — headings are short, the card
+    body with the offer's conditions is long, so the longest snippet is the
+    most informative one to show in the alert.
+    """
     low = text.lower()
-    offers = set()
+    offers = {}
     for bank, aliases in BANKS.items():
         for alias in aliases:
             for m in re.finditer(rf"\b{re.escape(alias)}\b", low):
-                snippet = text[m.start() : m.start() + window]
-                for am in re.finditer(r"£\s?(\d{1,3}(?:,\d{3})?)(?!\d)", snippet):
+                snippet = text[m.start() : m.start() + window * 3]
+                near = snippet[:window]
+                for am in re.finditer(r"£\s?(\d{1,3}(?:,\d{3})?)(?!\d)", near):
                     amount = int(am.group(1).replace(",", ""))
-                    if min_gbp <= amount <= max_gbp:
-                        offers.add((bank, amount))
+                    if not (min_gbp <= amount <= max_gbp):
+                        continue
+                    clean = re.sub(r"\s+", " ", snippet).strip()
+                    key = (bank, amount)
+                    if len(clean) > len(offers.get(key, "")):
+                        offers[key] = clean
     return offers
 
 
@@ -148,9 +175,19 @@ def run():
             continue
         fields = []
         if added:
+            lines = []
+            for k in added:
+                bank, amount = k.split("|")
+                line = f"• **{bank}** — £{amount}"
+                if bank in APPLY_LINKS:
+                    line += f" · [apply]({APPLY_LINKS[bank]})"
+                snippet = offers.get((bank, int(amount)), "")
+                if snippet:
+                    line += f"\n> {snippet[:220]}"
+                lines.append(line)
             fields.append({
                 "name": "\U0001f195 New / changed",
-                "value": "\n".join(f"• **{k.split('|')[0]}** — £{k.split('|')[1]}" for k in added)[:1024],
+                "value": "\n".join(lines)[:1024],
                 "inline": False,
             })
         if removed:
