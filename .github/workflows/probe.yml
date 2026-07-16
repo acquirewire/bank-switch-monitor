@@ -1,0 +1,20 @@
+name: probe-sources
+on: workflow_dispatch
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe candidate sources
+        run: |
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"
+          for url in \
+            "https://moneyfactscompare.co.uk/current-accounts/switching-incentives/" \
+            "https://moneyfactscompare.co.uk/current-accounts/" \
+            "https://www.finder.com/uk/current-accounts/best-bank-switch-deals" \
+            "https://www.which.co.uk/money/banking/switching-your-bank/bank-accounts-with-switching-bonuses-aVngS8T2AGXY" \
+            "https://www.hotukdeals.com/rss/search?q=bank+switch" \
+            "https://www.moneysavingexpert.com/banking/compare-best-bank-accounts/" ; do
+            code=$(curl -s -o /tmp/page -w "%{http_code}" -A "$UA" --max-time 25 "$url" || echo FAIL)
+            size=$(wc -c < /tmp/page 2>/dev/null || echo 0)
+            echo "PROBE $code $size $url"
+          done
