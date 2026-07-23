@@ -9,7 +9,6 @@
    "Co-op Bank|100",
    "Co-op Bank|125",
    "First Direct|175",
-   "First Direct|200",
    "First Direct|220",
    "First Direct|250",
    "First Direct|300",
@@ -25,6 +24,8 @@
    "Nationwide|75",
    "RBS|200",
    "Santander|180",
+   "Santander|200",
+   "Santander|220",
    "Ulster Bank|200"
   ],
   "MSE student bank accounts": [
