@@ -25,16 +25,16 @@
    "Ulster Bank|200"
   ],
   "MSE student bank accounts": [
+   "Bank of Scotland|100",
+   "Bank of Scotland|120",
    "Lloyds|100",
+   "Lloyds|120",
    "NatWest|100",
-   "NatWest|120",
-   "NatWest|80",
    "Nationwide|100",
    "Nationwide|120",
    "RBS|100",
-   "RBS|120",
-   "RBS|80",
-   "Santander|100"
+   "Santander|100",
+   "Santander|115"
   ]
  }
 }
