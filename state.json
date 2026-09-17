@@ -2,7 +2,10 @@
  "initialized": true,
  "pages": {
   "MSE current account switch offers": [
+   "Bank of Scotland|100",
+   "Bank of Scotland|200",
    "Chase|250",
+   "Club Lloyds|200",
    "First Direct|175",
    "First Direct|210",
    "First Direct|220",
@@ -10,6 +13,9 @@
    "HSBC|210",
    "HSBC|220",
    "HSBC|250",
+   "Halifax|100",
+   "Halifax|200",
+   "Lloyds|200",
    "NatWest|100",
    "NatWest|200",
    "Nationwide|120",
